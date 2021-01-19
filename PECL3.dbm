@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.3-beta1" use-changelog="false" last-position="1018,0" last-zoom="0.75" max-obj-count="14"
+	 default-schema="public" default-owner="postgres">
+<database name="PECL1" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layer="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="CLIENTE" layer="0" collapse-mode="1" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="40" y="580"/>
+	<column name="codigo_cliente" alias="id_cliente" not-null="true">
+		<type name="char" length="10"/>
+		<comment><![CDATA[Es un código único del cliente y se utiliza para identicarlo.]]></comment>
+	</column>
+	<column name="nombre" alias="Nombre del cliente">
+		<type name="character varying" length="40"/>
+	</column>
+	<column name="direccion" alias="Dirección de residencia del cliente">
+		<type name="character varying" length="200"/>
+		<comment><![CDATA[Provincia/Ciudad/Calle/Número de calle]]></comment>
+	</column>
+	<column name="telefono" alias="Teléfono de contacto del cliente">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="persona_de_contacto" alias="Persona de contacto del cliente">
+		<type name="character varying" length="40"/>
+	</column>
+	<column name="actividad" alias="Actividad que desarrolla el cliente contratador">
+		<type name="char" length="1"/>
+		<comment><![CDATA[Solo es posible que la actividad que realiza el cliente sea: Publicidad y cine , o Moda.]]></comment>
+	</column>
+	<constraint name="CLIENTE_pk" type="pk-constr" table="public.&quot;CLIENTE&quot;">
+		<columns names="codigo_cliente" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="CASTING" layer="0" collapse-mode="1" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="820" y="540"/>
+	<column name="codigo_casting" alias="id_casting" not-null="true">
+		<type name="char" length="10"/>
+		<comment><![CDATA[Código identificatorio del casting]]></comment>
+	</column>
+	<column name="nombre">
+		<type name="character varying" length="40"/>
+		<comment><![CDATA[Nombre del casting]]></comment>
+	</column>
+	<column name="descripcion">
+		<type name="character varying" length="1000"/>
+		<comment><![CDATA[Descrípción general de las carácteristicas y contenidos del casting]]></comment>
+	</column>
+	<column name="fecha_de_contratacion">
+		<type name="date" length="0"/>
+		<comment><![CDATA[Fecha en la que se contrató el servicio de casting.]]></comment>
+	</column>
+	<constraint name="CASTING_pk" type="pk-constr" table="public.&quot;CASTING&quot;">
+		<columns names="codigo_casting" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="codigo_cliente" index="4"/>
+		<object name="coste" index="5"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="CLIENTE_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="ONLINE" layer="0" alias="Casting Online" collapse-mode="1" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="340" y="220"/>
+	<column name="numero_de_personas">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Número de personas que participan en el casting]]></comment>
+	</column>
+	<column name="fecha">
+		<type name="date" length="0"/>
+		<comment><![CDATA[Fecha de realización del casting]]></comment>
+	</column>
+	<column name="plataforma_web">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Enlace a la platorma web del casting online]]></comment>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="codigo_casting" index="3"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="CASTING_fk" index="1"/>
+		<object name="ONLINE_pk" index="0"/>
+	</customidxs>
+</table>
+
+<table name="PRESENCIAL" layer="0" alias="Casting presencial" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="900" y="240"/>
+	<column name="numero_de_personas">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Número de personas que participan en el casting presencial
+]]></comment>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="codigo_casting" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="CASTING_fk" index="0"/>
+		<object name="PRESENCIAL_pk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="FASE" layer="0" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[Fases de casting presencial.]]></comment>
+	<position x="1560" y="260"/>
+	<column name="codigo_fase" alias="codigo_de_fase" not-null="true">
+		<type name="char" length="10"/>
+		<comment><![CDATA[Número que contabiliza la fase en la que se encuentra el casting]]></comment>
+	</column>
+	<column name="fecha_de_inicio">
+		<type name="date" length="0"/>
+		<comment><![CDATA[Fecha de inicio de la fase]]></comment>
+	</column>
+	<constraint name="FASES_pk" type="pk-constr" table="public.&quot;FASE&quot;">
+		<columns names="codigo_fase" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="PRUEBA INDIVIDUAL" layer="0" alias="Pruebas" collapse-mode="1" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[Pruebas a cada uno de los participantes de un casting dentro de una o varias fases determinadas.]]></comment>
+	<position x="2100" y="260"/>
+	<column name="numero" not-null="true">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Número de prueba dentro de cada fase ]]></comment>
+	</column>
+	<column name="fecha">
+		<type name="date" length="0"/>
+		<comment><![CDATA[Fecha de realización de la prueba individual]]></comment>
+	</column>
+	<column name="sala_de_celebracion" alias="Sala">
+		<type name="character varying" length="200"/>
+		<comment><![CDATA[Lugar de realización de la prueba individual]]></comment>
+	</column>
+	<column name="descripcion">
+		<type name="character varying" length="1000"/>
+	</column>
+	<column name="coste">
+		<type name="smallint" length="0"/>
+	</column>
+	<constraint name="PRUEBAS INDIVIDUALES_pk" type="pk-constr" table="public.&quot;PRUEBA INDIVIDUAL&quot;">
+		<columns names="numero" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="codigo_fase" index="5"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="FASE_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="AGENTE" layer="0" alias="Agente de Casting" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[Agente que dirige un casting]]></comment>
+	<position x="960" y="40"/>
+	<column name="DNI" not-null="true">
+		<type name="char" length="9"/>
+	</column>
+	<column name="nombre">
+		<type name="character varying" length="40"/>
+		<comment><![CDATA[Nombre del agente]]></comment>
+	</column>
+	<column name="direccion">
+		<type name="character varying" length="300"/>
+		<comment><![CDATA[Lugar de residencia de un agente
+Provincia/Ciudad/Calle/Número]]></comment>
+	</column>
+	<constraint name="AGENTE_pk" type="pk-constr" table="public.&quot;AGENTE&quot;">
+		<columns names="DNI" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="CANDIDATOS" layer="0" collapse-mode="1" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1920" y="740"/>
+	<column name="codigo_candidato" not-null="true">
+		<type name="char" length="10"/>
+	</column>
+	<column name="nombre">
+		<type name="character varying" length="40"/>
+	</column>
+	<column name="direccion">
+		<type name="character varying" length="300"/>
+		<comment><![CDATA[Lugar de residencia de un candidato
+Provincia/Ciudad/Calle/Número]]></comment>
+	</column>
+	<column name="telefono">
+		<type name="integer" length="8"/>
+		<comment><![CDATA[Teléfono de contacto del candidatop]]></comment>
+	</column>
+	<column name="fecha_de_nacimiento">
+		<type name="date" length="0"/>
+		<comment><![CDATA[Fecha de nacimiento del candidato]]></comment>
+	</column>
+	<constraint name="CANDIDATOS_pk" type="pk-constr" table="public.&quot;CANDIDATOS&quot;">
+		<columns names="codigo_candidato" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="codigo_de_perfil" index="6"/>
+		<object name="nif_representante" index="5"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="CANDIDATOS_uq" index="3"/>
+		<object name="PERFIL_fk" index="2"/>
+		<object name="REPRESENTANTE_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="PERFIL" layer="0" collapse-mode="1" max-obj-count="10" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1240" y="760"/>
+	<column name="codigo_de_perfil" alias="id_perfil" not-null="true">
+		<type name="char" length="10"/>
+		<comment><![CDATA[Código de identificación del perfil]]></comment>
+	</column>
+	<column name="provincia">
+		<type name="character varying" length="40"/>
+		<comment><![CDATA[Provincia en la que reside el candidato]]></comment>
+	</column>
+	<column name="sexo">
+		<type name="char" length="1"/>
+		<comment><![CDATA[Género del candidato
+[M: Maculino,F: Femenino,N: No binario]]]></comment>
+	</column>
+	<column name="altura">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="edad">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="color_del_pelo">
+		<type name="character varying" length="20"/>
+		<comment><![CDATA[Color del pelo del candidato.]]></comment>
+	</column>
+	<column name="color_de_ojos" alias="ojos">
+		<type name="character varying" length="20"/>
+	</column>
+	<column name="especialidad">
+		<type name="character varying" length="6"/>
+		<comment><![CDATA[Puede ser : modelo o actor.]]></comment>
+	</column>
+	<column name="experiencia">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Si tiene experienca o no el candidato]]></comment>
+	</column>
+	<constraint name="PERFIL_pk" type="pk-constr" table="public.&quot;PERFIL&quot;">
+		<columns names="codigo_de_perfil" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="ADULTOS" layer="0" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1540" y="1140"/>
+	<column name="DNI" not-null="true">
+		<type name="char" length="9"/>
+	</column>
+	<constraint name="ADULTOS_pk" type="pk-constr" table="public.&quot;ADULTOS&quot;">
+		<columns names="DNI" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="NIÑO" layer="0" collapse-mode="1" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1920" y="1140"/>
+	<column name="nombre_tutor">
+		<type name="character varying" length="40"/>
+		<comment><![CDATA[Nombre del tutor legal del menor. ]]></comment>
+	</column>
+</table>
+
+<table name="REPRESENTANTE" layer="0" collapse-mode="1" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2460" y="880"/>
+	<column name="NIF" not-null="true">
+		<type name="char" length="9"/>
+	</column>
+	<column name="nombre">
+		<type name="character varying" length="40"/>
+	</column>
+	<column name="telefono">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="direccion">
+		<type name="character varying" length="300"/>
+		<comment><![CDATA[Lugar de residencia de un representante
+Provincia/Ciudad/Calle/Número]]></comment>
+	</column>
+	<constraint name="REPRESENTANTE_pk" type="pk-constr" table="public.&quot;REPRESENTANTE&quot;">
+		<columns names="NIF" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="contrata" type="rel1n" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;CLIENTE&quot;"
+	 dst-table="public.&quot;CASTING&quot;"
+	 src-required="false" dst-required="false">
+	<column name="coste">
+		<type name="smallint" length="0"/>
+	</column>
+</relationship>
+
+<relationship name="tipo1" type="rel11" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;CASTING&quot;"
+	 dst-table="public.&quot;ONLINE&quot;"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+/>
+
+<relationship name="tipo2" type="rel11" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;CASTING&quot;"
+	 dst-table="public.&quot;PRESENCIAL&quot;"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+/>
+
+<relationship name="tiene" type="rel1n" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;PRESENCIAL&quot;"
+	 dst-table="public.&quot;FASE&quot;"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+/>
+
+<relationship name="se_divide_en" type="rel1n" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;FASE&quot;"
+	 dst-table="public.&quot;PRUEBA INDIVIDUAL&quot;"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+/>
+
+<relationship name="realiza" type="relnn" layer="0"
+	 src-col-pattern="{sc}" dst-col-pattern="{sc}"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 src-table="public.&quot;CANDIDATOS&quot;"
+	 dst-table="public.&quot;PRUEBA INDIVIDUAL&quot;"
+	 src-required="false" dst-required="false"
+	 table-name="candidato_realiza_prueba">
+	<column name="resultado_prueba">
+		<type name="bool" length="0"/>
+	</column>
+</relationship>
+
+<relationship name="cuenta" type="rel1n" layer="0"
+	 src-col-pattern="nif_representante"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;REPRESENTANTE&quot;"
+	 dst-table="public.&quot;CANDIDATOS&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tipo3" type="rel11" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;CANDIDATOS&quot;"
+	 dst-table="public.&quot;ADULTOS&quot;"
+	 src-required="true" dst-required="false"/>
+
+<relationship name="tipo4" type="rel11" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;CANDIDATOS&quot;"
+	 dst-table="public.&quot;NIÑO&quot;"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+/>
+
+<relationship name="asocia" type="rel11" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;PERFIL&quot;"
+	 dst-table="public.&quot;CANDIDATOS&quot;"
+	 src-required="true" dst-required="false"/>
+
+<relationship name="necesita" type="relnn" layer="0"
+	 src-col-pattern="{sc}" dst-col-pattern="{sc}"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 pk-col-pattern="id"
+	 src-table="public.&quot;CASTING&quot;"
+	 dst-table="public.&quot;PERFIL&quot;"
+	 src-required="false" dst-required="false"
+	 table-name="casting_necesita_perfil"/>
+
+<relationship name="dirige" type="rel1n" layer="0"
+	 src-col-pattern="{sc}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;AGENTE&quot;"
+	 dst-table="public.&quot;PRESENCIAL&quot;"
+	 src-required="true" dst-required="false"/>
+
+</dbmodel>
