@@ -15,6 +15,6 @@ create user javier;
 create user rodrigo;
 create user jefe;
 
-grant administrador to recepcionista;
+grant administrador to jefe;
 grant gestor to rodrigo;
 grant recepcionista to javier;
