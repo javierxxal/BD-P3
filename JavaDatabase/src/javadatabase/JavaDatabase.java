@@ -11,12 +11,12 @@ import java.util.logging.Logger;
 import java.util.Scanner;
 
 public class JavaDatabase {
-    private static String url;
-    private String user;
-    private String password;
+    private final String url = "jdbc:postgresql://127.0.0.1:5432/PL3";
+    private static String user;
+    private static String password;
     private final Logger logger = Logger.getLogger(JavaDatabase.class.getName());
     private Connection conn = null;
-    private Scanner entrada= new Scanner(System.in);
+    Scanner entrada= new Scanner(System.in);
     public Connection connect() { 
         try {
             Class.forName("org.postgresql.Driver").newInstance(); 
@@ -86,7 +86,7 @@ public class JavaDatabase {
           System.out.println("Número de candidatos asociados a cada perfil");
           while(rs.next()){
               System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("codigo_de_perfil").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("count(codigo_de_perfil)").trim()+".");              
+              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("num_candidatos").trim()+".");              
           }
           System.out.println("============================");        
 
@@ -438,8 +438,6 @@ public class JavaDatabase {
     public static void main(String[] args) {
       
         //Primero recogemos los datos para conectarnos a la BD
-        System.out.println("Inserte la url de la base de datos PL3 para conectarse a ella:");
-        url = entrada.nextLine();
         System.out.println("Inserte el usuario con el que se quiere conectar:");
         user = entrada.nexLine();
         System.out.println("Inserte la contraseña:");
