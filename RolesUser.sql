@@ -11,9 +11,9 @@ create role recepcionista;
 grant select  on adultos, agente, candidato_realiza_prueba, candidatos, casting, casting_necesita_perfil, cliente, fase, niño, online, perfil,
 presencial, prueba_individual, representante to recepcionista;
 
-create user javier;
-create user rodrigo;
-create user jefe;
+create user javier password 'javier';
+create user rodrigo password 'rodrigo';
+create user jefe password 'jefe';
 
 grant administrador to jefe;
 grant gestor to rodrigo;
