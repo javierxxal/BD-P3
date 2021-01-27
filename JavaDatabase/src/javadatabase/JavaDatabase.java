@@ -49,7 +49,7 @@ public class JavaDatabase {
           
           System.out.println("Listado de Clientes que no han contratado ningun Casting ");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("nombre").trim()+".");
+              System.out.println("Cliente: "+rs.getString("nombre").trim()+".");
           }
           System.out.println("============================");
           
@@ -65,9 +65,9 @@ public class JavaDatabase {
           Statement stmnt = conn.createStatement();
           ResultSet rs = stmnt.executeQuery(query);
 
-          System.out.println("Listado de Candidatso que han superado todas las pruebas");
+          System.out.println("Listado de Candidatos que han superado todas las pruebas");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("nombre").trim()+".");
+              System.out.println("Nombre de Candidato: "+rs.getString("nombre").trim()+".");
           }
           System.out.println("============================");        
         
@@ -85,8 +85,8 @@ public class JavaDatabase {
 
           System.out.println("Número de candidatos asociados a cada perfil");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("codigo_de_perfil").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("num_candidatos").trim()+".");              
+              System.out.println("Codigo de perfil: "+rs.getString("codigo_de_perfil").trim()+", Numero de Candidatos: "+rs.getString("num_candidatos").trim()+".");              
+           
           }
           System.out.println("============================");        
 
@@ -105,7 +105,7 @@ public class JavaDatabase {
          
           System.out.println("Nombre del empleado que más castings ha dirigido");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("nombre").trim()+".");
+              System.out.println("Nombre Empleado: "+rs.getString("nombre").trim()+".");
           }
           System.out.println("============================");        
         
@@ -123,9 +123,7 @@ public class JavaDatabase {
         
           System.out.println("Listado de castings con el número de candidatos que se han presentado");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("casting.codigo_casting").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("count(distinct codigo_candidato)").trim()+".");
-
+              System.out.println("Codigo Casting:"+rs.getString("casting_cod").trim()+", Numero de Candidatos: "+rs.getString("num_cod_candidato").trim()+".");
           }
           System.out.println("============================");        
        
@@ -143,9 +141,7 @@ public class JavaDatabase {
         
           System.out.println("Listado de candidatas con el pelo rubio y sean de Madrid");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("nombre").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("direccion").trim()+".");
-
+              System.out.println("Nombre de Candidatas: "+rs.getString("nombre").trim()+", Dirección: "+rs.getString("direccion").trim()+".");
           }
           System.out.println("============================");        
 
@@ -163,7 +159,7 @@ public class JavaDatabase {
         
           System.out.println("Listado de perfiles requeridos para castings con anuncio tv en su descripción.");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("codigo_de_perfil").trim()+".");
+              System.out.println("Codigo de Perfil: "+rs.getString("codigo_de_perfil").trim()+".");
           }
           System.out.println("============================");        
       
@@ -181,7 +177,7 @@ public class JavaDatabase {
         
           System.out.println("Listado de perfiles con representante y tienen el pelo castaño");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("codigo_candidato").trim()+".");
+              System.out.println("Codigo Candidato: "+rs.getString("codigo_candidato").trim()+".");
           }
           System.out.println("============================");         
         
@@ -199,8 +195,7 @@ public class JavaDatabase {
         
           System.out.println("Listado con los precios que han de pagar cada candidato");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("codigo_candidato").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("dinero_a_pagar").trim()+"."); //?)?? Si no funciona prpobar sum(coste)
+              System.out.println("Codigo Candidato: "+rs.getString("codigo_candidato").trim()+", Dinero a Pagar: "+rs.getString("dinero_a_pagar").trim()+"€ .");
 
           }
           System.out.println("============================");        
@@ -220,8 +215,8 @@ public class JavaDatabase {
         
           System.out.println("Listado con el numero de candidatos adultos y de candidatos niños");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("adultos").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("niño").trim()+".");
+              System.out.println("Nº de Adultos: "+rs.getString("adultos").trim()+".");
+              System.out.println("Nº de Niños: "+rs.getString("niño").trim()+".");
 
           }
           System.out.println("============================");        
@@ -241,7 +236,7 @@ public class JavaDatabase {
         
           System.out.println("DNI del agente que ha dirigido alguna prueba individual en la sala flor");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("dni").trim()+".");
+              System.out.println("DNI de Agente: "+rs.getString("dni").trim()+".");
           }
           System.out.println("============================");        
           
@@ -254,14 +249,14 @@ public class JavaDatabase {
     
     public void Query12(){
         try{
-          String query = "select plataforma_web , cliente.nombre from casting inner join cliente on casting.codigo_cliente = cliente.codigo_cliente inner join online on casting.codigo_casting = online.codigo_casting where coste = (select max(mayor_coste) from (select coste as mayor_coste from casting) as costes);";
+          String query = "select plataforma_web , cliente.nombre as cliente_nombre from casting inner join cliente on casting.codigo_cliente = cliente.codigo_cliente inner join online on casting.codigo_casting = online.codigo_casting where coste = (select max(mayor_coste) from (select coste as mayor_coste from casting) as costes);";
           Statement stmnt = conn.createStatement();
           ResultSet rs = stmnt.executeQuery(query);
         
           System.out.println("Plataforma web y cliente utilizado en el casting online más caro");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("plataforma_web").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("cliente.nombre").trim()+".");
+              System.out.println("Plataforma Web: "+rs.getString("plataforma_web").trim()+".");
+              System.out.println("Nombre Cliente: "+rs.getString("cliente_nombre").trim()+".");
 
           }
           System.out.println("============================");        
@@ -281,9 +276,7 @@ public class JavaDatabase {
         
           System.out.println("Porcentaje de tipo de clientes");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("actividad").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("porcentaje").trim()+"."); //Mismo que el resto
-
+              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("porcentaje").trim()+"%.");
           }
           System.out.println("============================");        
           
@@ -296,14 +289,13 @@ public class JavaDatabase {
     
     public void Query14(){
         try{
-          String query = "select distinct candidatos.nombre, casting.nombre from candidato_realiza_prueba inner join candidatos on candidato_realiza_prueba.codigo_candidato = candidatos.codigo_candidato inner join casting on candidato_realiza_prueba.codigo_casting = casting.codigo_casting where resultado_prueba = true ;";
+          String query = "select distinct candidatos.nombre as candidato_nombre, casting.nombre as casting_nombre from candidato_realiza_prueba inner join candidatos on candidato_realiza_prueba.codigo_candidato = candidatos.codigo_candidato inner join casting on candidato_realiza_prueba.codigo_casting = casting.codigo_casting where resultado_prueba = true ;";
           Statement stmnt = conn.createStatement();
           ResultSet rs = stmnt.executeQuery(query);
         
           System.out.println("Listado de candidatos que han superado alguna prueba junto con el nombre de su respectivo casting");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("candidatos.nombre").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("casting.nombre").trim()+".");
+              System.out.println("Nombre Candidato: "+rs.getString("candidato_nombre").trim()+", Casting: "+rs.getString("casting_nombre").trim()+".");
 
           }
           System.out.println("============================");        
@@ -317,13 +309,13 @@ public class JavaDatabase {
 
     public void Query15(){
         try{
-          String query = "select sum(coste) from casting;";
+          String query = "select sum(coste) as suma_coste from casting;";
           Statement stmnt = conn.createStatement();
           ResultSet rs = stmnt.executeQuery(query);
         
           System.out.println("Dinero total recaudado por la empresa");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("sum(coste)").trim()+".");
+              System.out.println(rs.getString("suma_coste").trim()+"€.");
           }
           System.out.println("============================");        
           
@@ -342,9 +334,7 @@ public class JavaDatabase {
         
           System.out.println("Listado de representantes que representan a 2 o más personas");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("nombre").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("telefono").trim()+".");
-
+              System.out.println("Nombre representante: "+rs.getString("nombre").trim()+", Telefono: "+rs.getString("telefono").trim()+".");
           }
           System.out.println("============================");        
           
@@ -363,7 +353,7 @@ public class JavaDatabase {
         
           System.out.println("Listado de DNI de adultos sin representante");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("dni").trim()+".");
+              System.out.println("DNI: "+rs.getString("dni").trim()+".");
           }
           System.out.println("============================");        
           
@@ -376,14 +366,14 @@ public class JavaDatabase {
     
     public void Query18(){
         try{
-          String query = "select cliente.nombre as nombre_cliente, perfil.* from casting_necesita_perfil inner join casting on casting_necesita_perfil.codigo_casting = casting.codigo_casting inner join perfil on casting_necesita_perfil.codigo_de_perfil = perfil.codigo_de_perfil inner join cliente on casting.codigo_cliente = cliente.codigo_cliente where perfil.codigo_de_perfil in (select codigo_de_perfil from casting_necesita_perfil group by codigo_de_perfil having count(codigo_de_perfil) = (select max(veces_solicitado) from (select codigo_de_perfil, count(codigo_de_perfil) as veces_solicitado from casting_necesita_perfil group by codigo_de_perfil) as cuantosperfil));";
+          String query = "select cliente.nombre as nombre_cliente, perfil.* as datos_perfil from casting_necesita_perfil inner join casting on casting_necesita_perfil.codigo_casting = casting.codigo_casting inner join perfil on casting_necesita_perfil.codigo_de_perfil = perfil.codigo_de_perfil inner join cliente on casting.codigo_cliente = cliente.codigo_cliente where perfil.codigo_de_perfil in (select codigo_de_perfil from casting_necesita_perfil group by codigo_de_perfil having count(codigo_de_perfil) = (select max(veces_solicitado) from (select codigo_de_perfil, count(codigo_de_perfil) as veces_solicitado from casting_necesita_perfil group by codigo_de_perfil) as cuantosperfil));";
           Statement stmnt = conn.createStatement();
           ResultSet rs = stmnt.executeQuery(query);
         
           System.out.println("Listado de perfiles más demandados junto a sus respectivos clientes");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("nombre_cliente").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("perfil.*").trim()+"."); //Posible error para solucionar una sentencia por cada linea
+              System.out.println("Nombre Cliente: "+rs.getString("nombre_cliente").trim()+".");
+              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("datos_perfil").trim()+"."); //Posible error para solucionar una sentencia por cada linea
 
           }
           System.out.println("============================");        
@@ -403,8 +393,9 @@ public class JavaDatabase {
         
           System.out.println("Listado de pruebas superadas por cada niño");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("count(*)").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("niño.codigo_candidato").trim()+".");
+              System.out.println("Nombre Cliente: "+rs.getString("nombre_cliente").trim()+", Codigo Perfil: "+rs.getString(2).trim()+", Provincia: "+rs.getString(3).trim()+
+                      ", Sexo: "+rs.getString(4).trim()+", Altura: "+rs.getString(5).trim()+", Edad: "+rs.getString(6).trim()+", Color de Pelo: "+rs.getString(7).trim()+
+                      ", Color de ojos: "+rs.getString(8).trim()+", Especialidad: "+rs.getString(9).trim()+", Experiencia: "+rs.getString(10).trim()+",");
 
           }
           System.out.println("============================");        
@@ -424,7 +415,7 @@ public class JavaDatabase {
         
           System.out.println("Listado de Castings con más fases");
           while(rs.next()){
-              System.out.println("["+rs.getString(1).trim()+"]: "+rs.getString("codigo_casting").trim()+".");
+              System.out.println("Codigo Casting: "+rs.getString("codigo_casting").trim()+".");
           }
           System.out.println("============================");        
           
