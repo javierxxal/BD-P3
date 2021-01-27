@@ -1,6 +1,10 @@
+REVOKE ALL ON schema public FROM public;
+
 create role administrador;
 grant all privileges on adultos, agente, candidato_realiza_prueba, candidatos, casting, casting_necesita_perfil, cliente, fase, niño, online, perfil,
 presencial, prueba_individual, representante to administrador;
+
+GRANT ALL ON schema public TO administrador;
 
 create role gestor;
 grant select, update, delete, insert   on adultos, agente, candidato_realiza_prueba, candidatos, casting, casting_necesita_perfil, cliente, fase, niño, online, perfil,
