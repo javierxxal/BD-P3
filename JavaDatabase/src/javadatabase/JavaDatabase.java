@@ -16,7 +16,7 @@ public class JavaDatabase {
     private static String password;
     private final Logger logger = Logger.getLogger(JavaDatabase.class.getName());
     private Connection conn = null;
-    Scanner entrada= new Scanner(System.in);
+    static Scanner entrada= new Scanner(System.in);
     public Connection connect() { 
         try {
             Class.forName("org.postgresql.Driver").newInstance(); 
@@ -117,7 +117,7 @@ public class JavaDatabase {
 
     public void Query5(){
         try{
-          String query = "select casting.codigo_casting, count(distinct codigo_candidato) from casting inner join candidato_realiza_prueba on casting.codigo_casting = candidato_realiza_prueba.codigo_casting group by casting.codigo_casting;";
+          String query = "select casting.codigo_casting as casting_cod, count(distinct codigo_candidato) as num_cod_candidato from casting inner join candidato_realiza_prueba on casting.codigo_casting = candidato_realiza_prueba.codigo_casting group by casting.codigo_casting;";
           Statement stmnt = conn.createStatement();
           ResultSet rs = stmnt.executeQuery(query);
         
@@ -372,8 +372,9 @@ public class JavaDatabase {
         
           System.out.println("Listado de perfiles más demandados junto a sus respectivos clientes");
           while(rs.next()){
-              System.out.println("Nombre Cliente: "+rs.getString("nombre_cliente").trim()+".");
-              System.out.println("["+rs.getString(2).trim()+"]: "+rs.getString("datos_perfil").trim()+"."); //Posible error para solucionar una sentencia por cada linea
+              System.out.println("Nombre Cliente: "+rs.getString("nombre_cliente").trim()+", Codigo Perfil: "+rs.getString(2).trim()+", Provincia: "+rs.getString(3).trim()+
+                      ", Sexo: "+rs.getString(4).trim()+", Altura: "+rs.getString(5).trim()+", Edad: "+rs.getString(6).trim()+", Color de Pelo: "+rs.getString(7).trim()+
+                      ", Color de ojos: "+rs.getString(8).trim()+", Especialidad: "+rs.getString(9).trim()+", Experiencia: "+rs.getString(10).trim()+",");
 
           }
           System.out.println("============================");        
@@ -387,15 +388,13 @@ public class JavaDatabase {
     
     public void Query19(){
         try{
-          String query = "select count(*), niño.codigo_candidato from candidato_realiza_prueba inner join candidatos on candidato_realiza_prueba.codigo_candidato = candidatos.codigo_candidato inner join niño on niño.codigo_candidato = candidatos.codigo_candidato where resultado_prueba = 'true' group by niño.codigo_candidato;";
+          String query = "select count(*) as pruebas_superadas, niño.codigo_candidato as niño_codigo from candidato_realiza_prueba inner join candidatos on candidato_realiza_prueba.codigo_candidato = candidatos.codigo_candidato inner join niño on niño.codigo_candidato = candidatos.codigo_candidato where resultado_prueba = 'true' group by niño.codigo_candidato;";
           Statement stmnt = conn.createStatement();
           ResultSet rs = stmnt.executeQuery(query);
         
           System.out.println("Listado de pruebas superadas por cada niño");
           while(rs.next()){
-              System.out.println("Nombre Cliente: "+rs.getString("nombre_cliente").trim()+", Codigo Perfil: "+rs.getString(2).trim()+", Provincia: "+rs.getString(3).trim()+
-                      ", Sexo: "+rs.getString(4).trim()+", Altura: "+rs.getString(5).trim()+", Edad: "+rs.getString(6).trim()+", Color de Pelo: "+rs.getString(7).trim()+
-                      ", Color de ojos: "+rs.getString(8).trim()+", Especialidad: "+rs.getString(9).trim()+", Experiencia: "+rs.getString(10).trim()+",");
+              System.out.println("Pruebas superadas: "+rs.getString("pruebas_superadas").trim()+", Codigo Ñino: "+rs.getString("niño_codigo").trim()+".");
 
           }
           System.out.println("============================");        
@@ -430,7 +429,7 @@ public class JavaDatabase {
       
         //Primero recogemos los datos para conectarnos a la BD
         System.out.println("Inserte el usuario con el que se quiere conectar:");
-        user = entrada.nexLine();
+        user = entrada.nextLine();
         System.out.println("Inserte la contraseña:");
         password = entrada.nextLine();
         System.out.println("=====================================");
@@ -442,29 +441,29 @@ public class JavaDatabase {
         app.connect();
         //Dejamos elegir al usuario la función a utilizar
         int  opcion = 1;
+        System.out.println("1º- Mostrar el nombre de los clientes que no han contratado ningún casting.");
+        System.out.println("2º- Mostrar el nombre de los candidatos que han superado todas las pruebas");
+        System.out.println("3º- Mostrar el número de candidatos que hay asociados a cada perfil.");
+        System.out.println("4º- Mostrar el nombre del empleado que más castings ha dirigido.");
+        System.out.println("5º- Mostrar el número de candidatos que se han presentado a cada casting");
+        System.out.println("6º- Mostrar el nombre y la dirección de las candidatas que tengan el pelo rubio y sean de Madrid");
+        System.out.println("7º- Mostrar el código de perfil de los perfiles requeridos en los castings que incluyen la subcadena “anuncio tv” en su descripción.");
+        System.out.println("8º- Mostrar el código de los candidatos que tienen representante y tienen el pelo castaño.");
+        System.out.println("9º- Mostrar el precio total que ha de pagar cada candidato");
+        System.out.println("10º- Mostrar el número de candidatos adultos y el número de candidatos niños que hay en la base de datos");
+        System.out.println("11º- Mostrar el dni del agente que ha dirigido el casting en el que alguna prueba individual se ha llevado a cabo en la sala “flor”");
+        System.out.println("12º- Mostrar la plataforma web que se ha usado en el casting online más caro, así como el nombre del cliente que ha contratado dicho casting.");
+        System.out.println("13º- Mostrar el porcentaje de clientes que hay de cada tipo");
+        System.out.println("14º- Mostrar el nombre de los candidatos que han superado alguna prueba de algún casting, así como el nombre del casting.");
+        System.out.println("15º- Mostrar el dinero total recaudado por la empresa");
+        System.out.println("16º- Mostrar el nombre y el teléfono de los representantes que representen a 2 candidatos como mínimo.");
+        System.out.println("17º- Mostrar el dni de los adultos que no tengan representante");
+        System.out.println("18º- Mostrar los datos del perfil más demandado así como el nombre del cliente que lo ha requerido para su casting.");
+        System.out.println("19º- Mostrar el número de pruebas superadas por cada niño.");
+        System.out.println("20º- Mostrar el código del casting que más fases tiene.");
+        System.out.println("21º- Salir del Programa");        
         while(opcion != 21){
-            System.out.println("Introduzca del listado siguiente la query que quiere realizar:");
-            System.out.println("1º- Mostrar el nombre de los clientes que no han contratado ningún casting.");
-            System.out.println("2º- Mostrar el nombre de los candidatos que han superado todas las pruebas");
-            System.out.println("3º- Mostrar el número de candidatos que hay asociados a cada perfil.");
-            System.out.println("4º- Mostrar el nombre del empleado que más castings ha dirigido.");
-            System.out.println("5º- Mostrar el número de candidatos que se han presentado a cada casting");
-            System.out.println("6º- Mostrar el nombre y la dirección de las candidatas que tengan el pelo rubio y sean de Madrid");
-            System.out.println("7º- Mostrar el código de perfil de los perfiles requeridos en los castings que incluyen la subcadena “anuncio tv” en su descripción.");
-            System.out.println("8º- Mostrar el código de los candidatos que tienen representante y tienen el pelo castaño.");
-            System.out.println("9º- Mostrar el precio total que ha de pagar cada candidato");
-            System.out.println("10º- Mostrar el número de candidatos adultos y el número de candidatos niños que hay en la base de datos");
-            System.out.println("11º- Mostrar el dni del agente que ha dirigido el casting en el que alguna prueba individual se ha llevado a cabo en la sala “flor”");
-            System.out.println("12º- Mostrar la plataforma web que se ha usado en el casting online más caro, así como el nombre del cliente que ha contratado dicho casting.");
-            System.out.println("13º- Mostrar el porcentaje de clientes que hay de cada tipo");
-            System.out.println("14º- Mostrar el nombre de los candidatos que han superado alguna prueba de algún casting, así como el nombre del casting.");
-            System.out.println("15º- Mostrar el dinero total recaudado por la empresa");
-            System.out.println("16º- Mostrar el nombre y el teléfono de los representantes que representen a 2 candidatos como mínimo.");
-            System.out.println("17º- Mostrar el dni de los adultos que no tengan representante");
-            System.out.println("18º- Mostrar los datos del perfil más demandado así como el nombre del cliente que lo ha requerido para su casting.");
-            System.out.println("19º- Mostrar el número de pruebas superadas por cada niño.");
-            System.out.println("20º- Mostrar el código del casting que más fases tiene.");
-            System.out.println("21º- Salir del Programa");
+            System.out.println("Introduzca del listado anterior la query que quiere realizar:");
             opcion = entrada.nextInt();
             
             switch(opcion){
