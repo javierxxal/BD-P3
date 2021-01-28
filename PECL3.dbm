@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3-beta1" use-changelog="false" last-position="1018,0" last-zoom="0.75" max-obj-count="14"
+<dbmodel pgmodeler-ver="0.9.3-beta1" use-changelog="false" last-position="486,180" last-zoom="0.75" max-obj-count="15"
 	 default-schema="public" default-owner="postgres">
 <database name="PECL1" is-template="false" allow-conns="true">
 </database>
@@ -198,7 +198,7 @@ Provincia/Ciudad/Calle/Número]]></comment>
 	</constraint>
 </table>
 
-<table name="CANDIDATOS" layer="0" collapse-mode="1" max-obj-count="8" z-value="0">
+<table name="CANDIDATOS" layer="0" collapse-mode="1" max-obj-count="9" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="1920" y="740"/>
@@ -221,13 +221,18 @@ Provincia/Ciudad/Calle/Número]]></comment>
 		<type name="date" length="0"/>
 		<comment><![CDATA[Fecha de nacimiento del candidato]]></comment>
 	</column>
+	<column name="importe_total">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Dinero total pagado por el candidato por todas las pruebas que ha realizado.
+]]></comment>
+	</column>
 	<constraint name="CANDIDATOS_pk" type="pk-constr" table="public.&quot;CANDIDATOS&quot;">
 		<columns names="codigo_candidato" ref-type="src-columns"/>
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="codigo_de_perfil" index="6"/>
-		<object name="nif_representante" index="5"/>
+		<object name="codigo_de_perfil" index="7"/>
+		<object name="nif_representante" index="6"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
@@ -442,5 +447,20 @@ Provincia/Ciudad/Calle/Número]]></comment>
 	 src-table="public.&quot;AGENTE&quot;"
 	 dst-table="public.&quot;PRESENCIAL&quot;"
 	 src-required="true" dst-required="false"/>
+
+<table name="contrata" layer="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="800" y="800"/>
+	<column name="codigo_casting" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="codigo_candidato" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<constraint name="contrata_pk" type="pk-constr" table="public.contrata">
+		<columns names="codigo_casting,codigo_candidato" ref-type="src-columns"/>
+	</constraint>
+</table>
 
 </dbmodel>

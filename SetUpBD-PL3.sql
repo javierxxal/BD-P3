@@ -399,6 +399,128 @@ CREATE TABLE public.CONTRATA (
 ALTER TABLE public.CONTRATA OWNER TO postgres;
 -- ddl-end --
 
+/* TRIGGERS */
+
+--Triggers especificados en la práctica:
+
+-- PRIMER TRIGGER
+--Calcular el importe total que ha pagado cada candidato
+--teniendo en cuenta todas las pruebas que ha realizado.
+
+create or replace function fun_importe_candidato() returns Trigger as
+$actualizarImporte$
+begin
+	update candidatos
+	set importe_total = importe_total + (select coste from prueba_individual where
+	numero = new.numero and
+	codigo_fase = new.codigo_fase and
+	codigo_casting = new.codigo_casting)
+	
+	where codigo_candidato = new.codigo_candidato;
+	
+	return new;
+end
+$actualizarImporte$
+Language plpgsql;
+
+create trigger tr_importe_candidato after insert on candidato_realiza_prueba
+for each row
+execute procedure fun_importe_candidato();
+
+
+
+-- SEGUNDO TRIGGER
+--Cuando un candidato supera una prueba de un casting, se debe calcular el número de pruebas superadas por dicho candidato.
+--Si ese número coincide con el número de pruebas totales de dicho casting, se mostrará un mensaje y se insertará en la tabla “contrata”.
+
+create or replace function fun_insertar_contrata() returns Trigger as
+$insertarContratados$
+declare
+	num_pruebas_totales smallint;
+	num_pruebas_pasadas smallint;
+begin
+	if(new.resultado_prueba = 'TRUE') then
+	
+		num_pruebas_pasadas = (select count(*) from candidato_realiza_prueba where codigo_candidato = new.codigo_candidato
+						  and resultado_prueba = 'TRUE');
+		num_pruebas_totales = (select count(*) from prueba_individual where codigo_casting = new.codigo_casting);
+		
+		if(num_pruebas_pasadas = num_pruebas_totales) then
+					   raise notice 'El candidato ha superado todas las pruebas, está contratado';
+					   insert into contrata values (new.codigo_casting , new.codigo_candidato);
+		end if;
+	end if;
+	return new;
+end
+$insertarContratados$
+Language plpgsql;
+
+create trigger tr_insertar_contrata after insert on candidato_realiza_prueba
+for each row
+execute procedure fun_insertar_contrata();
+
+	
+-- TERCER TRIGGER
+--Al insertar un candidato en la tabla “contrata” se debe comprobar si para ese casting en particular
+--ya se han contratado suficientes personas. Para ello, se deberá comparar el número de candidatos 
+--seleccionados para ese casting con el número de personas requerido al contratar el casting.
+
+create or replace function fun_comprobar_contrata() returns Trigger as
+$comprobarContratados$
+declare
+	num_personas_requeridas smallint;
+	num_personas_contratadas smallint;
+begin
+	num_personas_requeridas = (select numero_de_personas from presencial 
+		where codigo_casting = new.codigo_casting);
+	num_personas_contratadas = (select count(*) from contrata
+		where codigo_casting = new.codigo_casting);
+		
+	if(num_personas_requeridas = num_personas_contratadas) then
+		raise notice 'Ya se han contratado a todos los candidatos necesarios';
+		return null;
+	else
+		return new;
+	end if;
+end
+$comprobarContratados$
+Language plpgsql;
+
+create trigger tr_comprobar_contrata before insert on contrata
+for each row
+execute procedure fun_comprobar_contrata();
+					 
+-- CUARTO TRIGGER
+--Cuando un candidato realiza una prueba de un determinado casting,
+--se debe comprobar si su perfil encaja en alguno de los perfiles requeridos por en dicho casting.
+					   					   
+create function fun_comprobar_perfil() returns Trigger as
+$comprobarPerfil$
+declare
+	perfil_buscado character(10);
+	perfil_candidato character(10);
+begin
+	perfil_buscado = (select codigo_de_perfil from casting_necesita_perfil
+					 where codigo_casting = new.codigo_casting);
+	perfil_candidato = (select codigo_de_perfil from candidatos
+					   where codigo_candidato = new.codigo_candidato);
+					   
+	if (perfil_buscado = perfil_candidato) then
+		return new;
+	else
+		raise notice 'El candidato no puede realizar la prueba porque no encaja en ningún perfil';
+		return null;
+	end if;
+end
+$comprobarPerfil$
+Language plpgsql;
+
+create trigger tr_comprobar_perfil before insert on candidato_realiza_prueba
+for each row
+execute procedure fun_comprobar_perfil();
+
+
+
 
 set datestyle to postgres, dmy;
 /*INSERTS DE CLIENTES*/
@@ -471,7 +593,7 @@ insert into presencial values('18','QF8BYWIQFU','25800941R');
 insert into presencial values('45','ZQ8IT7ABC7','98062359L');
 insert into presencial values('67','HK328Z8E63','84511807S');
 insert into presencial values('90','9ETDJDGZOC','42886401A');
-insert into presencial values('80','ZDI2J077V0','42886401A');
+insert into presencial values('1','ZDI2J077V0','42886401A');
 
 
 /*INSERTS DE FASE*/
@@ -607,7 +729,7 @@ INSERT INTO casting_necesita_perfil VALUES ('RQ3TCC0MTS', 'QAU8GWQRXD');
 INSERT INTO casting_necesita_perfil VALUES ('I96ICE30U7', '55GH5Y203E');
 INSERT INTO casting_necesita_perfil VALUES ('9C2JA0T52E', 'J4R9OQEUW3');
 INSERT INTO casting_necesita_perfil VALUES ('QF8BYWIQFU', 'DD1IYABIES');
-INSERT INTO casting_necesita_perfil VALUES ('ZQ8IT7ABC7', '55GH5Y203E');
+INSERT INTO casting_necesita_perfil VALUES ('ZQ8IT7ABC7', 'DD1IYABIES');
 INSERT INTO casting_necesita_perfil VALUES ('HK328Z8E63', '5R71U58U1Z');
 INSERT INTO casting_necesita_perfil VALUES ('9ETDJDGZOC', 'ZFMIOI42PS');
 INSERT INTO casting_necesita_perfil VALUES ('ZDI2J077V0', 'QAU8GWQRXD');
@@ -643,10 +765,9 @@ insert into candidato_realiza_prueba values ('I2ZPQSTI3X','01','OVR1LWY1CJ','HK3
 insert into candidato_realiza_prueba values ('770C6RCUSM','01','U1N2IG6SOQ','9ETDJDGZOC','FALSE');
 
 
-insert into candidato_realiza_prueba values ('TZCCRGP35Y','01','LMBJHFWLQE','ZDI2J077V0','FALSE');
-insert into candidato_realiza_prueba values ('TZCCRGP35Y','02','LMBJHFWLQE','ZDI2J077V0','FALSE');
-insert into candidato_realiza_prueba values ('TZCCRGP35Y','03','LMBJHFWLQE','ZDI2J077V0','FALSE');
+insert into candidato_realiza_prueba values ('TZCCRGP35Y','01','LMBJHFWLQE','ZDI2J077V0','TRUE');
 
+/*USUARIOS Y ROLES*/
 
 create role administrador;
 grant all privileges on adultos, agente, candidato_realiza_prueba, candidatos, casting, casting_necesita_perfil, cliente, fase, niño, online, perfil,
