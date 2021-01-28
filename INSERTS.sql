@@ -71,7 +71,7 @@ insert into presencial values('18','QF8BYWIQFU','25800941R');
 insert into presencial values('45','ZQ8IT7ABC7','98062359L');
 insert into presencial values('67','HK328Z8E63','84511807S');
 insert into presencial values('90','9ETDJDGZOC','42886401A');
-insert into presencial values('80','ZDI2J077V0','42886401A');
+insert into presencial values('1','ZDI2J077V0','42886401A');
 
 
 /*INSERTS DE FASE*/
@@ -207,7 +207,7 @@ INSERT INTO casting_necesita_perfil VALUES ('RQ3TCC0MTS', 'QAU8GWQRXD');
 INSERT INTO casting_necesita_perfil VALUES ('I96ICE30U7', '55GH5Y203E');
 INSERT INTO casting_necesita_perfil VALUES ('9C2JA0T52E', 'J4R9OQEUW3');
 INSERT INTO casting_necesita_perfil VALUES ('QF8BYWIQFU', 'DD1IYABIES');
-INSERT INTO casting_necesita_perfil VALUES ('ZQ8IT7ABC7', '55GH5Y203E');
+INSERT INTO casting_necesita_perfil VALUES ('ZQ8IT7ABC7', 'DD1IYABIES');
 INSERT INTO casting_necesita_perfil VALUES ('HK328Z8E63', '5R71U58U1Z');
 INSERT INTO casting_necesita_perfil VALUES ('9ETDJDGZOC', 'ZFMIOI42PS');
 INSERT INTO casting_necesita_perfil VALUES ('ZDI2J077V0', 'QAU8GWQRXD');
@@ -243,6 +243,4 @@ insert into candidato_realiza_prueba values ('I2ZPQSTI3X','01','OVR1LWY1CJ','HK3
 insert into candidato_realiza_prueba values ('770C6RCUSM','01','U1N2IG6SOQ','9ETDJDGZOC','FALSE');
 
 
-insert into candidato_realiza_prueba values ('TZCCRGP35Y','01','LMBJHFWLQE','ZDI2J077V0','FALSE');
-insert into candidato_realiza_prueba values ('TZCCRGP35Y','02','LMBJHFWLQE','ZDI2J077V0','FALSE');
-insert into candidato_realiza_prueba values ('TZCCRGP35Y','03','LMBJHFWLQE','ZDI2J077V0','FALSE');
+insert into candidato_realiza_prueba values ('TZCCRGP35Y','01','LMBJHFWLQE','ZDI2J077V0','TRUE');

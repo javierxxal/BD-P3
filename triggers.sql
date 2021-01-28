@@ -1,87 +1,127 @@
---Triggers
--- 	Triggers necesarios para el correcto funcinamiento:
-
--- // VALIDAR COSAS? //
-
 --Triggers especificados en la práctica:
--- 	Calcular el importe total que ha pagado cada candidato
--- 	teniendo en cuenta todas las pruebas que ha realizado.
-drop trigger tr_importe_candidato on candidato_realiza_prueba;
-drop function fun_importe_candidato();
-drop trigger tr_insertar_contrata on candidato_realiza_prueba;
-drop function fun_insertar_contrata();
 
-create function fun_importe_candidato() returns Trigger as
-$$
-declare
-	coste_prueba smallint;
+-- PRIMER TRIGGER
+--Calcular el importe total que ha pagado cada candidato
+--teniendo en cuenta todas las pruebas que ha realizado.
+
+create or replace function fun_importe_candidato() returns Trigger as
+$actualizarImporte$
 begin
-	coste_prueba = (select coste from prueba_individual inner join
-	candidato_realiza_prueba on
-	prueba_individual.numero = new.numero and
-	prueba_individual.codigo_fase = new.codigo_fase and
-	prueba_individual.codigo_casting = new.codigo_casting);
-	
-	raise notice 'COSTEEEEEEE: %', new.codigo_candidato;
-	
 	update candidatos
-	set importe_total = importe_total + coste_prueba
+	set importe_total = importe_total + (select coste from prueba_individual where
+	numero = new.numero and
+	codigo_fase = new.codigo_fase and
+	codigo_casting = new.codigo_casting)
+	
 	where codigo_candidato = new.codigo_candidato;
-	return NULL;
+	
+	return new;
 end
-$$
+$actualizarImporte$
 Language plpgsql;
 
 create trigger tr_importe_candidato after insert on candidato_realiza_prueba
+for each row
 execute procedure fun_importe_candidato();
 
 
 
--- SEGUNDO TRIGGER AHHHHH COJO
+-- SEGUNDO TRIGGER
 --Cuando un candidato supera una prueba de un casting, se debe calcular el número de pruebas superadas por dicho candidato.
 --Si ese número coincide con el número de pruebas totales de dicho casting, se mostrará un mensaje y se insertará en la tabla “contrata”.
 
-create function fun_insertar_contrata() returns Trigger as
-$$
+create or replace function fun_insertar_contrata() returns Trigger as
+$insertarContratados$
 declare
-	pruebas_totales smallint;
-	pruebas_pasadas smallint;
-	candidato character;
-	casting character;
+	num_pruebas_totales smallint;
+	num_pruebas_pasadas smallint;
 begin
-	pruebas_pasadas = (select count(*) from candidato_realiza_prueba where codigo_candidato = new.codigo_candidato);
-	candidato = new.codigo_candidato;
-	casting = new.casting;
+	if(new.resultado_prueba = 'TRUE') then
 	
-	pruebas_totales = (select count(*) from prueba_individual where codigo_casting = casting);
-
-	if(pruebas_pasadas = pruebas_totales) then
-					   insert into contrata values (casting , candidato);
-	return NULL;
+		num_pruebas_pasadas = (select count(*) from candidato_realiza_prueba where codigo_candidato = new.codigo_candidato
+						  and resultado_prueba = 'TRUE');
+		num_pruebas_totales = (select count(*) from prueba_individual where codigo_casting = new.codigo_casting);
+		
+		if(num_pruebas_pasadas = num_pruebas_totales) then
+					   raise notice 'El candidato ha superado todas las pruebas, está contratado';
+					   insert into contrata values (new.codigo_casting , new.codigo_candidato);
+		end if;
+	end if;
+	return new;
 end
-$$
+$insertarContratados$
 Language plpgsql;
 
 create trigger tr_insertar_contrata after insert on candidato_realiza_prueba
+for each row
 execute procedure fun_insertar_contrata();
 
-					   
--- CUARTo TRIGER AHAHDHAWHDAHDHA
+	
+-- TERCER TRIGGER
+--Al insertar un candidato en la tabla “contrata” se debe comprobar si para ese casting en particular
+--ya se han contratado suficientes personas. Para ello, se deberá comparar el número de candidatos 
+--seleccionados para ese casting con el número de personas requerido al contratar el casting.
+
+create or replace function fun_comprobar_contrata() returns Trigger as
+$comprobarContratados$
+declare
+	num_personas_requeridas smallint;
+	num_personas_contratadas smallint;
+begin
+	num_personas_requeridas = (select numero_de_personas from presencial 
+		where codigo_casting = new.codigo_casting);
+	num_personas_contratadas = (select count(*) from contrata
+		where codigo_casting = new.codigo_casting);
+		
+	if(num_personas_requeridas = num_personas_contratadas) then
+		raise notice 'Ya se han contratado a todos los candidatos necesarios';
+		return null;
+	else
+		return new;
+	end if;
+end
+$comprobarContratados$
+Language plpgsql;
+
+create trigger tr_comprobar_contrata before insert on contrata
+for each row
+execute procedure fun_comprobar_contrata();
+					 
+-- CUARTO TRIGGER
 --Cuando un candidato realiza una prueba de un determinado casting,
 --se debe comprobar si su perfil encaja en alguno de los perfiles requeridos por en dicho casting.
 					   					   
-create function fun_insertar_prueba() returns Trigger as
-$$
+create function fun_comprobar_perfil() returns Trigger as
+$comprobarPerfil$
 declare
-
+	perfil_buscado character(10);
+	perfil_candidato character(10);
 begin
-	if((select count(*) from casting_necesita_perfil group by codigo_de_perfil)>0)then
-						delete from casting_necesita_perfil 
-						where 'Falta poner la condición que hace que se borre la tupla exacta.'
-	return NULL;
+	perfil_buscado = (select codigo_de_perfil from casting_necesita_perfil
+					 where codigo_casting = new.codigo_casting);
+	perfil_candidato = (select codigo_de_perfil from candidatos
+					   where codigo_candidato = new.codigo_candidato);
+					   
+	if (perfil_buscado = perfil_candidato) then
+		return new;
+	else
+		raise notice 'El candidato no puede realizar la prueba porque no encaja en ningún perfil';
+		return null;
+	end if;
 end
-$$
+$comprobarPerfil$
 Language plpgsql;
 
-create trigger tr_insertar_prueba before insert on candidato_realiza_prueba
-execute procedure fun_insertar_prueba();					   
+create trigger tr_comprobar_perfil before insert on candidato_realiza_prueba
+for each row
+execute procedure fun_comprobar_perfil();			
+
+
+
+
+
+
+
+
+
+
